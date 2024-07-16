@@ -1,0 +1,19 @@
+## Interface: 1002006
+## Version: 0.0.1
+## Title: |cffffff8fRubberduck|r
+## Author: Rubbewduck-Illidan
+## IconTexture: Interface\Icons\inv_duckbaby_mallard
+## OptionalDeps: ElvUI
+
+libs\LibStub\LibStub.lua
+libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+Media\Media.lua
+
+Core\Mixins.lua
+Core\Events.lua
+Core\Modules.lua
+
+Modules\Dialog.lua
+# modules\professions.lua
+Modules\ElvUI\Core.lua
+Modules\ElvUI\Tags.lua

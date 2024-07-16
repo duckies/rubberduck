@@ -1,0 +1,26 @@
+{
+  "Lua.diagnostics.globals": [
+    "aura_env",
+    "ElvUI_DuckTools",
+    "class",
+    "QuestFrameProgressPanel",
+    "QuestFrame",
+    "QuestFrameCompleteButton",
+    "QuestFrameGoodbyeButton",
+    "QuestFrameDetailPanel",
+    "QuestFrameAcceptButton",
+    "QuestFrameRewardPanel",
+    "GossipFrame",
+    "GOSSIP_BUTTON_TYPE_OPTION",
+    "GOSSIP_BUTTON_TYPE_ACTIVE_QUEST",
+    "GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST",
+    "QuestRewardCompleteButton_OnClick",
+    "QuestDetailAcceptButton_OnClick",
+    "QuestProgressCompleteButton_OnClick",
+    "QuestGoodbyeButton_OnClick",
+    "StaticPopup1",
+    "StaticPopup1Button1",
+    "BOOKTYPE_PROFESSION",
+    "Add"
+  ]
+}
