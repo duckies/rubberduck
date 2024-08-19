@@ -12,3 +12,9 @@
 --- @field GetModule fun(self: Addon, name: string): Module
 --- @field mixins table<string, table>
 --- @field modules table<string, Module>
+
+--- @class BlizzMoveAPI
+--- @field RegisterAddOnFrames fun(self:BlizzMoveAPI, addOns: table)
+
+--- @class _G
+--- @field BlizzMoveAPI BlizzMoveAPI

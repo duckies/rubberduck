@@ -3,7 +3,7 @@
 ## Title: |cffffff8fRubberduck|r
 ## Author: Rubbewduck-Illidan
 ## IconTexture: Interface\Icons\inv_duckbaby_mallard
-## OptionalDeps: ElvUI
+## OptionalDeps: ElvUI, BlizzMove
 
 libs\LibStub\LibStub.lua
 libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
@@ -15,6 +15,7 @@ Core\Modules.lua
 
 Modules\Dialog.lua
 # modules\professions.lua
+Modules\MoveFrames.lua
 Modules\Currency.lua
 Modules\ElvUI\Core.lua
 Modules\ElvUI\Tags.lua
