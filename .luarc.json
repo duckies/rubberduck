@@ -1,5 +1,16 @@
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "runtime.version": "Lua 5.1",
-  "diagnostics.globals": ["ElvUI"]
+  "diagnostics.disable": [
+    "undefined-field"
+  ],
+  "diagnostics.globals": [
+    "ElvUI",
+    "BlizzMoveAPI"
+  ],
+  "workspace.ignoreDir": [
+    ".github",
+    ".vscode",
+    "Rubberduck/Libs"
+  ]
 }

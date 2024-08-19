@@ -1,26 +1,38 @@
 {
+  "Lua.runtime.version": "Lua 5.1",
+  "Lua.runtime.builtin": {
+    "basic": "disable",
+    "debug": "disable",
+    "io": "disable",
+    "math": "disable",
+    "os": "disable",
+    "package": "disable",
+    "string": "disable",
+    "table": "disable",
+    "utf8": "disable"
+  },
+  "Lua.workspace.library": [
+    "~/.vscode-server/extensions/ketho.wow-api-0.17.4/Annotations"
+  ],
   "Lua.diagnostics.globals": [
     "aura_env",
     "ElvUI_DuckTools",
-    "class",
-    "QuestFrameProgressPanel",
-    "QuestFrame",
-    "QuestFrameCompleteButton",
-    "QuestFrameGoodbyeButton",
-    "QuestFrameDetailPanel",
-    "QuestFrameAcceptButton",
-    "QuestFrameRewardPanel",
-    "GossipFrame",
     "GOSSIP_BUTTON_TYPE_OPTION",
     "GOSSIP_BUTTON_TYPE_ACTIVE_QUEST",
     "GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST",
-    "QuestRewardCompleteButton_OnClick",
+    "GossipFrame",
+    "QuestFrame",
+    "StaticPopup1",
+    "QuestFrameDetailPanel",
+    "QuestFrameProgressPanel",
+    "QuestFrameRewardPanel",
+    "QuestFrameCompleteButton",
+    "StaticPopup1Button1",
     "QuestDetailAcceptButton_OnClick",
     "QuestProgressCompleteButton_OnClick",
     "QuestGoodbyeButton_OnClick",
-    "StaticPopup1",
-    "StaticPopup1Button1",
-    "BOOKTYPE_PROFESSION",
-    "Add"
-  ]
+    "QuestRewardCompleteButton_OnClick",
+    "QuestFrameGreetingPanel",
+    "TooltipDataProcessor"
+  ],
 }
