@@ -147,12 +147,26 @@ function M:OnGossipShow()
     tinsert(tabs, v)
   end
 
+  if QuestFrameGreetingPanel then
+    if QuestFrameGreetingPanel.titleButtonPool then
+      for tab in QuestFrameGreetingPanel.titleButtonPool:EnumerateActive() do
+        if tab:GetObjectType() == "Button" then
+          table.insert(self.gossips, tab)
+        end
+      end
+    else
+      -- I have to add something with QuestGreetingScrollChildFrame:GetChildren()
+    end
+  end
+
+  -- Filter gossip options from the gossip options.
   for _, tab in ipairs(tabs) do
     if tab:GetObjectType() == "Button" and tab:IsVisible() then
       tinsert(self.gossips, tab)
     end
   end
 
+  -- Filter gossip options by order.
   table.sort(self.gossips, function(a, b)
     if a.GetOrderIndex then
       return a:GetOrderIndex() < b:GetOrderIndex()
