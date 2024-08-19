@@ -15,5 +15,6 @@ Core\Modules.lua
 
 Modules\Dialog.lua
 # modules\professions.lua
+Modules\Currency.lua
 Modules\ElvUI\Core.lua
 Modules\ElvUI\Tags.lua
