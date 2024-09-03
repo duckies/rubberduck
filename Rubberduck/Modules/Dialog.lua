@@ -5,9 +5,9 @@ local M = ns:NewModule("Dialog")
 
 local GOSSIP_BUTTON_TYPE_OPTION, GOSSIP_BUTTON_TYPE_ACTIVE_QUEST, GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST =
     GOSSIP_BUTTON_TYPE_OPTION, GOSSIP_BUTTON_TYPE_ACTIVE_QUEST, GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST
-local GossipFrame, QuestFrame, StaticPopup1, QuestFrameDetailPanel, QuestFrameProgressPanel, QuestFrameRewardPanel =
-    GossipFrame, QuestFrame, StaticPopup1, QuestFrameDetailPanel, QuestFrameProgressPanel, QuestFrameRewardPanel
-local QuestFrameCompleteButton, StaticPopup1Button1 = QuestFrameCompleteButton, StaticPopup1Button1
+local GossipFrame, QuestFrame, StaticPopup1, QuestFrameDetailPanel, QuestFrameProgressPanel, QuestFrameRewardPanel, QuestFrameGreetingPanel =
+    GossipFrame, QuestFrame, StaticPopup1, QuestFrameDetailPanel, QuestFrameProgressPanel, QuestFrameRewardPanel,
+    QuestFrameGreetingPanel
 local QuestDetailAcceptButton_OnClick, QuestProgressCompleteButton_OnClick, QuestGoodbyeButton_OnClick, QuestRewardCompleteButton_OnClick =
     QuestDetailAcceptButton_OnClick, QuestProgressCompleteButton_OnClick, QuestGoodbyeButton_OnClick,
     QuestRewardCompleteButton_OnClick
@@ -139,41 +139,38 @@ function M:CreateHotkeyFrame()
   return HotkeyFrame
 end
 
-function M:OnGossipShow()
-  local tabs = {}
+--- @param frames table<number, Frame>
+function M:FilterAndSetGossips(frames)
   self.gossips = {}
 
-  for _, v in pairs({ GossipFrame.GreetingPanel.ScrollBox.ScrollTarget:GetChildren() }) do
-    tinsert(tabs, v)
-  end
-
-  if QuestFrameGreetingPanel then
-    if QuestFrameGreetingPanel.titleButtonPool then
-      for tab in QuestFrameGreetingPanel.titleButtonPool:EnumerateActive() do
-        if tab:GetObjectType() == "Button" then
-          table.insert(self.gossips, tab)
-        end
-      end
-    else
-      -- I have to add something with QuestGreetingScrollChildFrame:GetChildren()
+  for _, frame in ipairs(frames) do
+    if frame:GetObjectType() == "Button" and frame:IsEnabled() then
+      tinsert(self.gossips, frame)
     end
   end
 
-  -- Filter gossip options from the gossip options.
-  for _, tab in ipairs(tabs) do
-    if tab:GetObjectType() == "Button" and tab:IsVisible() then
-      tinsert(self.gossips, tab)
-    end
-  end
-
-  -- Filter gossip options by order.
   table.sort(self.gossips, function(a, b)
-    if a.GetOrderIndex then
+    if a.GetOrderIndex and b.GetOrderIndex then
       return a:GetOrderIndex() < b:GetOrderIndex()
     else
       return a:GetTop() > b:GetTop()
     end
   end)
+end
+
+function M:OnGossipShow()
+  -- FIXME: If an option is not in the scroll view it will not be added to the list of gossips
+  -- until the next time the gossip is shown. We can hook the scroll box, but it might not be worth it.
+  self:FilterAndSetGossips({ GossipFrame.GreetingPanel.ScrollBox.ScrollTarget:GetChildren() })
+end
+
+function M:OnQuestGreeting()
+  if QuestFrameGreetingPanel.titleButtonPool then
+    self:FilterAndSetGossips({ QuestFrameGreetingPanel.titleButtonPool:EnumerateActive() })
+  else
+    print("QuestFrameGreetingPanel.titleButtonPool DEBUG")
+    self:FilterAndSetGossips({ QuestFrameGreetingPanel.titleButtonPool:GetChildren() })
+  end
 end
 
 function M:OnLoad()
@@ -194,4 +191,11 @@ function M:OnLoad()
   end)
 
   self:RegisterEvent("GOSSIP_SHOW", "OnGossipShow")
+  self:RegisterEvent("QUEST_GREETING", "OnQuestGreeting")
+
+  -- Not all scroll children are visible when the frame is first shown.
+  -- However, this deletes and recreates self.gossips, do I care?
+  -- hooksecurefunc(GossipFrame.GreetingPanel.ScrollBox, "Update", function(frame)
+  --   M.FilterAndSetGossips(self, { frame.ScrollTarget:GetChildren() })
+  -- end)
 end

@@ -25,7 +25,7 @@ function M:CreateTags()
       local healthPercent = health / healthMax * 100
 
       if (healthPercent ~= 100) then
-        return format("%.1f%s — %s", healthPercent, "%", E:ShortValue(health))
+        return format("%.1f%s | %s", healthPercent, "%", E:ShortValue(health))
       else
         return E:ShortValue(health)
       end
