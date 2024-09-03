@@ -5,9 +5,10 @@ local M = ns:NewModule("Dialog")
 
 local GOSSIP_BUTTON_TYPE_OPTION, GOSSIP_BUTTON_TYPE_ACTIVE_QUEST, GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST =
     GOSSIP_BUTTON_TYPE_OPTION, GOSSIP_BUTTON_TYPE_ACTIVE_QUEST, GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST
-local GossipFrame, QuestFrame, StaticPopup1, QuestFrameDetailPanel, QuestFrameProgressPanel, QuestFrameRewardPanel, QuestFrameGreetingPanel =
+local GossipFrame, QuestFrame, StaticPopup1, QuestFrameDetailPanel, QuestFrameProgressPanel, QuestFrameRewardPanel, QuestFrameGreetingPanel, QuestGreetingScrollChildFrame =
     GossipFrame, QuestFrame, StaticPopup1, QuestFrameDetailPanel, QuestFrameProgressPanel, QuestFrameRewardPanel,
-    QuestFrameGreetingPanel
+    QuestFrameGreetingPanel, QuestGreetingScrollChildFrame
+local StaticPopup1Button1, QuestFrameCompleteButton = StaticPopup1Button1, QuestFrameCompleteButton
 local QuestDetailAcceptButton_OnClick, QuestProgressCompleteButton_OnClick, QuestGoodbyeButton_OnClick, QuestRewardCompleteButton_OnClick =
     QuestDetailAcceptButton_OnClick, QuestProgressCompleteButton_OnClick, QuestGoodbyeButton_OnClick,
     QuestRewardCompleteButton_OnClick
@@ -139,38 +140,35 @@ function M:CreateHotkeyFrame()
   return HotkeyFrame
 end
 
---- @param frames table<number, Frame>
-function M:FilterAndSetGossips(frames)
-  self.gossips = {}
+--- @param event "GOSSIP_SHOW" | "QUEST_GREETING"
+function M:OnDialog(event)
+  local frames, gossips = {}, {}
 
-  for _, frame in ipairs(frames) do
-    if frame:GetObjectType() == "Button" and frame:IsEnabled() then
-      tinsert(self.gossips, frame)
+  if event == "GOSSIP_SHOW" then
+    frames = { GossipFrame.GreetingPanel.ScrollBox.ScrollTarget:GetChildren() }
+  elseif event == "QUEST_GREETING" then
+    if QuestFrameGreetingPanel.titleButtonPool then
+      frames = { QuestFrameGreetingPanel.titleButtonPool:EnumerateActive() }
+    else
+      frames = { QuestGreetingScrollChildFrame:GetChildren() }
     end
   end
 
-  table.sort(self.gossips, function(a, b)
+  for _, frame in ipairs(frames) do
+    if frame:GetObjectType() == "Button" and frame:IsEnabled() then
+      tinsert(gossips, frame)
+    end
+  end
+
+  table.sort(gossips, function(a, b)
     if a.GetOrderIndex and b.GetOrderIndex then
       return a:GetOrderIndex() < b:GetOrderIndex()
     else
       return a:GetTop() > b:GetTop()
     end
   end)
-end
 
-function M:OnGossipShow()
-  -- FIXME: If an option is not in the scroll view it will not be added to the list of gossips
-  -- until the next time the gossip is shown. We can hook the scroll box, but it might not be worth it.
-  self:FilterAndSetGossips({ GossipFrame.GreetingPanel.ScrollBox.ScrollTarget:GetChildren() })
-end
-
-function M:OnQuestGreeting()
-  if QuestFrameGreetingPanel.titleButtonPool then
-    self:FilterAndSetGossips({ QuestFrameGreetingPanel.titleButtonPool:EnumerateActive() })
-  else
-    print("QuestFrameGreetingPanel.titleButtonPool DEBUG")
-    self:FilterAndSetGossips({ QuestFrameGreetingPanel.titleButtonPool:GetChildren() })
-  end
+  self.gossips = gossips
 end
 
 function M:OnLoad()
@@ -184,18 +182,18 @@ function M:OnLoad()
     self.HotkeyFrame:SetParentFrame(frame)
   end)
 
-  hooksecurefunc(GossipFrame, "Update", GossipDataProviderHook)
-
   StaticPopup1:HookScript("OnShow", function(frame)
     self.HotkeyFrame:SetParentFrame(frame)
   end)
 
-  self:RegisterEvent("GOSSIP_SHOW", "OnGossipShow")
-  self:RegisterEvent("QUEST_GREETING", "OnQuestGreeting")
+  hooksecurefunc(GossipFrame, "Update", GossipDataProviderHook)
 
-  -- Not all scroll children are visible when the frame is first shown.
-  -- However, this deletes and recreates self.gossips, do I care?
+  self:RegisterEvent("GOSSIP_SHOW", "OnDialog")
+  self:RegisterEvent("QUEST_GREETING", "OnDialog")
+
+  -- TODO: Use this callback to find missing gossips out of scroll view.
   -- hooksecurefunc(GossipFrame.GreetingPanel.ScrollBox, "Update", function(frame)
-  --   M.FilterAndSetGossips(self, { frame.ScrollTarget:GetChildren() })
+  --   local frames = frame.ScrollTarget:GetChildren()
+  --   ... do something with them, caching? Can I detect when we've reached the end and unhook?
   -- end)
 end

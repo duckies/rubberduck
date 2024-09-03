@@ -33,6 +33,7 @@
     "QuestGoodbyeButton_OnClick",
     "QuestRewardCompleteButton_OnClick",
     "QuestFrameGreetingPanel",
-    "TooltipDataProcessor"
+    "TooltipDataProcessor",
+    "QuestGreetingScrollChildFrame"
   ],
 }
